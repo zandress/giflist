@@ -27,6 +27,25 @@ export class HomeComponent {
   loadedGifs$ = new BehaviorSubject<string[]>([]);
 
   constructor(private redditService: RedditService) {}
+
+  setLoading(permalink: string) {
+    // Add the gifs permalink to the loading array
+    this.currentlyLoadingGifs$.next([
+      ...this.currentlyLoadingGifs$.value,
+      permalink,
+    ]);
+  }
+
+  setLoadingComplete(permalinkToComplete: string) {
+    // Add it to the loadedGifs$ stream while also removing it from the currentlyLoadingGifs$ stream
+    this.loadedGifs$.next([...this.loadedGifs$.value, permalinkToComplete]);
+
+    this.currentlyLoadingGifs$.next([
+      ...this.currentlyLoadingGifs$.value.filter(
+        (permalink) => !this.loadedGifs$.value.includes(permalink)
+      ),
+    ]);
+  }
 }
 
 @NgModule({
