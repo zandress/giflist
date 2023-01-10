@@ -11,7 +11,7 @@ export class RedditService {
         src: '',
         author: '',
         name: '',
-        permaLink: '',
+        permalink: '',
         title: '',
         thumbnail: '',
         comments: 0,
