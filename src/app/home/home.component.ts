@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
+import { BehaviorSubject } from 'rxjs';
 import { RedditService } from '../shared/data-access/reddit.service';
 import { GifListComponentModule } from './ui/gif-list.component';
 
@@ -21,6 +22,9 @@ import { GifListComponentModule } from './ui/gif-list.component';
 })
 export class HomeComponent {
   gifs$ = this.redditService.getGifs();
+
+  currentlyLoadingGifs$ = new BehaviorSubject<string[]>([]);
+  loadedGifs$ = new BehaviorSubject<string[]>([]);
 
   constructor(private redditService: RedditService) {}
 }
