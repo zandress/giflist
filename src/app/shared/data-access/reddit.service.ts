@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, EMPTY, map, of } from 'rxjs';
-import { RedditPost, RedditResponse } from '../interfaces';
+import { Gif, RedditPost, RedditResponse } from '../interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -28,8 +28,19 @@ export class RedditService {
       );
   }
 
-  private convertRedditPostsToGifs(posts: RedditPost[]){
-    // TODO: Implement
+  private convertRedditPostsToGifs(posts: RedditPost[]): Gif[] {
+    return posts
+      .map((post) => ({
+        src: this.getBestSrcForGif(post),
+        author: post.data.author,
+        name: post.data.name,
+        permalink: post.data.permalink,
+        title: post.data.title,
+        thumbnail: post.data.thumbnail,
+        comments: post.data.num_comments,
+        loading: false,
+      }))
+      .filter((gifs) => gifs.src !== null);
   }
 
   private getBestSrcForGif(post: RedditPost) {
