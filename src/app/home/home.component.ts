@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { RedditService } from '../shared/data-access/reddit.service';
 import { GifListComponentModule } from './ui/gif-list.component';
 
@@ -26,10 +26,22 @@ import { GifListComponentModule } from './ui/gif-list.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
-  gifs$ = this.redditService.getGifs();
-
   currentlyLoadingGifs$ = new BehaviorSubject<string[]>([]);
   loadedGifs$ = new BehaviorSubject<string[]>([]);
+
+  gifs$ = combineLatest([
+    this.redditService.getGifs(),
+    this.currentlyLoadingGifs$,
+    this.loadedGifs$,
+  ]).pipe(
+    map(([gifs, currentlyLoadingGifs, loadedGifs]) =>
+      gifs.map((gif) => ({
+        ...gif,
+        loading: currentlyLoadingGifs.includes(gif.permalink),
+        dataLoaded: loadedGifs.includes(gif.permalink),
+      }))
+    )
+  )
 
   constructor(private redditService: RedditService) {}
 
