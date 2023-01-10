@@ -1,8 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  EventEmitter,
   Input,
   NgModule,
+  Output,
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -99,9 +101,37 @@ import { Gif } from '../../shared/interfaces';
 })
 export class GifListComponent {
   @Input() gifs!: Gif[];
+  @Output() gifLoadStart = new EventEmitter<string>();
+  @Output() gifLoadComplete = new EventEmitter<string>();
 
   trackByFn(index: number, gif: Gif) {
     return gif.permalink;
+  }
+
+  playVideo(ev: Event, gif: Gif) {
+    const video = ev.target as HTMLVideoElement;
+
+    if (video.readyState === 4) {
+      if (video.paused) {
+        video.play();
+      } else {
+        video.pause();
+      }
+    } else {
+      if (video.getAttribute('data-event-loadeddata') !== 'true') {
+        this.gifLoadStart.emit(gif.permalink);
+        video.load();
+
+        const handleVideoLoaded = async () => {
+          this.gifLoadComplete.emit(gif.permalink);
+          await video.play();
+          video.removeEventListener('loadeddata', handleVideoLoaded);
+        };
+
+        video.addEventListener('loadeddata', handleVideoLoaded);
+        video.setAttribute('data-event-loadeddata', 'true');
+      }
+    }
   }
 }
 
