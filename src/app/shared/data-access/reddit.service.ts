@@ -10,6 +10,10 @@ export class RedditService {
   constructor(private http: HttpClient) {}
 
   getGifs() {
+    return this.fetchFromReddit('gifs');
+  }
+
+  private fetchFromReddit(subreddit: string) {
     return this.http
       .get<RedditResponse>(
         `https://www.reddit.com/r/${subreddit}/hot/.json?limit=100`
