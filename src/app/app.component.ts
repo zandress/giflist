@@ -5,7 +5,6 @@ import {
   RouteReuseStrategy,
   RouterModule,
 } from '@angular/router';
-import { App } from '@capacitor/app';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
