@@ -7,6 +7,7 @@ interface RedditPostData {
     author: string;
     name: string;
     permalink: string;
+    preview: RedditPreview;
     secure_media: RedditMedia;
     title: string;
     media: RedditMedia;
