@@ -15,7 +15,12 @@ import { GifListComponentModule } from './ui/gif-list.component';
       </ion-toolbar>
     </ion-header>
     <ion-content>
-      <app-gif-list *ngIf="gifs$ | async as gifs" [gifs]="gifs"></app-gif-list>
+      <app-gif-list 
+      *ngIf="gifs$ | async as gifs" 
+      [gifs]="gifs"
+      (gifLoadStart)="setLoading($event)"
+      (gifLoadComplete)="setLoadingComplete($event)"
+      ></app-gif-list>
     </ion-content>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
