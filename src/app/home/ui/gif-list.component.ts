@@ -16,15 +16,31 @@ import { Gif } from '../../shared/interfaces';
   template: `
     <ion-list lines="none">
       <div class="gif" *ngFor="let gif of gifs; trackBy: trackByFn">
-        <ion-item button detail="false">
-          <video
-            playsInline
-            poster="none"
-            preload="none"
-            [loop]="true"
-            [muted]="true"
-            [src]="gif.src"
-          ></video>
+        <ion-item button detail="false" (click)="playVideo($event, gif)">
+          <ion-spinner color="light" *ngIf="gif.loading"></ion-spinner>
+          <div
+            [style.background]="
+              'url(' + gif.thumbnail + ') 50% 50% / cover no-repeat'
+            "
+            [ngStyle]="
+              !gif.dataLoaded
+                ? {
+                    filter: 'blur(3px) brightness(0.6)',
+                    transform: 'scale(1.1)'
+                  }
+                : {}
+            "
+            class="preload-background"
+          >
+            <video
+              playsInline
+              poster="none"
+              preload="none"
+              [loop]="true"
+              [muted]="true"
+              [src]="gif.src"
+            ></video>
+          </div>
           <ion-label>{{ gif.title }}</ion-label>
         </ion-item>
       </div>
