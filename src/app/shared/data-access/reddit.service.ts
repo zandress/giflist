@@ -1,7 +1,25 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, concatMap, EMPTY, map, of, scan } from 'rxjs';
-import { Gif, RedditPagination, RedditPost, RedditResponse } from '../interfaces';
+import { FormControl } from '@angular/forms';
+import {
+  BehaviorSubject,
+  catchError,
+  concatMap,
+  debounceTime,
+  distinctUntilChanged,
+  EMPTY,
+  map,
+  of,
+  scan,
+  startWith,
+  switchMap,
+} from 'rxjs';
+import {
+  Gif,
+  RedditPagination,
+  RedditPost,
+  RedditResponse,
+} from '../interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -16,26 +34,38 @@ export class RedditService {
 
   constructor(private http: HttpClient) {}
 
-  getGifs() {
-    // Fetch Gifs
-    const gifsForCurrentPage$ = this.pagination$.pipe(
-      concatMap((pagination) =>
-        this.fetchFromReddit('gifs', 'hot', pagination.after)
-      )
+  getGifs(subredditFormControl: FormControl) {
+    // Start with a default emission of 'gifs', then only emit when
+    // subreddit changes
+    const subreddit$ = subredditFormControl.valueChanges.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      startWith(subredditFormControl.value)
     );
 
-    // Every time we get a new batch of gifs, add it to the cached gifs
-    const allGifs$ = gifsForCurrentPage$.pipe(
-      scan((previousGifs, currentGifs) => [...previousGifs, ...currentGifs])
-    );
+    return subreddit$.pipe(
+      switchMap((subreddit) => {
+        // Fetch Gifs
+        const gifsForCurrentPage$ = this.pagination$.pipe(
+          concatMap((pagination) =>
+            this.fetchFromReddit(subreddit, 'hot', pagination.after)
+          )
+        );
 
-    return allGifs$;
+        // Every time we get a new batch of gifs, add it to the cached gifs
+        const allGifs$ = gifsForCurrentPage$.pipe(
+          scan((previousGifs, currentGifs) => [...previousGifs, ...currentGifs])
+        );
+
+        return allGifs$;
+      })
+    );
   }
 
   private fetchFromReddit(
     subreddit: string,
     sort: string,
-    after: string | null,
+    after: string | null
   ) {
     return this.http
       .get<RedditResponse>(
