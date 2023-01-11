@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, EMPTY, map, of } from 'rxjs';
+import { BehaviorSubject, catchError, concatMap, EMPTY, map, of, scan } from 'rxjs';
 import { Gif, RedditPagination, RedditPost, RedditResponse } from '../interfaces';
 
 @Injectable({
@@ -17,13 +17,30 @@ export class RedditService {
   constructor(private http: HttpClient) {}
 
   getGifs() {
-    return this.fetchFromReddit('gifs');
+    // Fetch Gifs
+    const gifsForCurrentPage$ = this.pagination$.pipe(
+      concatMap((pagination) =>
+        this.fetchFromReddit('gifs', 'hot', pagination.after)
+      )
+    );
+
+    // Every time we get a new batch of gifs, add it to the cached gifs
+    const allGifs$ = gifsForCurrentPage$.pipe(
+      scan((previousGifs, currentGifs) => [...previousGifs, ...currentGifs])
+    );
+
+    return allGifs$;
   }
 
-  private fetchFromReddit(subreddit: string) {
+  private fetchFromReddit(
+    subreddit: string,
+    sort: string,
+    after: string | null,
+  ) {
     return this.http
       .get<RedditResponse>(
-        `https://www.reddit.com/r/${subreddit}/hot/.json?limit=100`
+        `https://www.reddit.com/r/${subreddit}/${sort}/.json?limit=100` +
+          (after ? `&after=${after}` : '')
       )
       .pipe(
         // If there is an error, just return an empty observable
