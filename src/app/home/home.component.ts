@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { BehaviorSubject, combineLatest, map, startWith } from 'rxjs';
@@ -42,8 +43,10 @@ export class HomeComponent {
   currentlyLoadingGifs$ = new BehaviorSubject<string[]>([]);
   loadedGifs$ = new BehaviorSubject<string[]>([]);
 
+  subredditFormControl = new FormControl('gifs');
+
   gifs$ = combineLatest([
-    this.redditService.getGifs(),
+    this.redditService.getGifs(this.subredditFormControl),
     this.currentlyLoadingGifs$,
     this.loadedGifs$,
   ]).pipe(
