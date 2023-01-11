@@ -1,12 +1,19 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, EMPTY, map, of } from 'rxjs';
-import { Gif, RedditPost, RedditResponse } from '../interfaces';
+import { BehaviorSubject, catchError, EMPTY, map, of } from 'rxjs';
+import { Gif, RedditPagination, RedditPost, RedditResponse } from '../interfaces';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RedditService {
+  private pagination$ = new BehaviorSubject<RedditPagination>({
+    after: null,
+    totalFound: 0,
+    retries: 0,
+    infiniteScroll: null,
+  });
+
   constructor(private http: HttpClient) {}
 
   getGifs() {
@@ -74,5 +81,15 @@ export class RedditService {
 
     // No useable formats available
     return null;
+  }
+
+  nextPage(infiniteScrollEvent: Event, after: string) {
+    this.pagination$.next({
+      after,
+      totalFound: 0,
+      retries: 0,
+      infiniteScroll:
+        infiniteScrollEvent?.target as HTMLIonInfiniteScrollElement,
+    });
   }
 }
