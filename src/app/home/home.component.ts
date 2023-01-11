@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { BehaviorSubject, combineLatest, map, startWith } from 'rxjs';
 import { RedditService } from '../shared/data-access/reddit.service';
+import { Gif } from '../shared/interfaces/gif';
 import { GifListComponentModule } from './ui/gif-list.component';
 
 @Component({
@@ -80,6 +81,10 @@ export class HomeComponent {
         (permalink) => !this.loadedGifs$.value.includes(permalink)
       ),
     ]);
+  }
+
+  loadMore(ev: Event, currentGifs: Gif[]) {
+    this.redditService.nextPage(ev, currentGifs[currentGifs.length - 1].name);
   }
 }
 
