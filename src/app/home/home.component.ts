@@ -22,6 +22,16 @@ import { GifListComponentModule } from './ui/gif-list.component';
           (gifLoadStart)="setLoading($event)"
           (gifLoadComplete)="setLoadingComplete($event)"
         ></app-gif-list>
+        <ion-infinite-scroll
+          threshold="100px;"
+          (ionInfinite)="loadMore($event, vm.gifs)"
+        >
+          <ion-infinite-scroll-content
+            loadingSpinner="bubbles"
+            loadingText="Fetching gifs..."
+          >
+          </ion-infinite-scroll-content>
+        </ion-infinite-scroll>
       </ion-content>
     </ng-container>
   `,
