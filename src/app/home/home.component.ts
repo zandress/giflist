@@ -7,14 +7,17 @@ import { BehaviorSubject, combineLatest, map, startWith } from 'rxjs';
 import { RedditService } from '../shared/data-access/reddit.service';
 import { Gif } from '../shared/interfaces/gif';
 import { GifListComponentModule } from './ui/gif-list.component';
+import { SearchBarComponentModule } from "./ui/search-bar.component";
 
 @Component({
   selector: 'app-home',
   template: `
     <ng-container *ngIf="vm$ | async as vm">
       <ion-header>
-        <ion-toolbar>
-          <ion-title> Home </ion-title>
+        <ion-toolbar color="primary">
+          <app-search-bar
+            [subredditFormControl]="subredditFormControl"
+          ></app-search-bar>
         </ion-toolbar>
       </ion-header>
       <ion-content>
@@ -92,17 +95,18 @@ export class HomeComponent {
 }
 
 @NgModule({
-  imports: [
-    CommonModule,
-    IonicModule,
-    GifListComponentModule,
-    RouterModule.forChild([
-      {
-        path: '',
-        component: HomeComponent,
-      },
-    ]),
-  ],
-  declarations: [HomeComponent],
+    declarations: [HomeComponent],
+    imports: [
+        CommonModule,
+        IonicModule,
+        GifListComponentModule,
+        RouterModule.forChild([
+            {
+                path: '',
+                component: HomeComponent,
+            },
+        ]),
+        SearchBarComponentModule
+    ]
 })
 export class HomeComponentModule {}
