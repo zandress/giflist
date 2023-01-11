@@ -13,6 +13,7 @@ import {
   scan,
   startWith,
   switchMap,
+  tap,
 } from 'rxjs';
 import {
   Gif,
@@ -40,7 +41,16 @@ export class RedditService {
     const subreddit$ = subredditFormControl.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      startWith(subredditFormControl.value)
+      startWith(subredditFormControl.value),
+      // Reset pagination values
+      tap(() =>
+        this.pagination$.next({
+          after: null,
+          totalFound: 0,
+          retries: 0,
+          infiniteScroll: null,
+        })
+      )
     );
 
     return subreddit$.pipe(
