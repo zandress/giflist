@@ -2,26 +2,28 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { BehaviorSubject, combineLatest, map } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, startWith } from 'rxjs';
 import { RedditService } from '../shared/data-access/reddit.service';
 import { GifListComponentModule } from './ui/gif-list.component';
 
 @Component({
   selector: 'app-home',
   template: `
-    <ion-header>
-      <ion-toolbar>
-        <ion-title> Home </ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content>
-      <app-gif-list 
-      *ngIf="gifs$ | async as gifs" 
-      [gifs]="gifs"
-      (gifLoadStart)="setLoading($event)"
-      (gifLoadComplete)="setLoadingComplete($event)"
-      ></app-gif-list>
-    </ion-content>
+    <ng-container *ngIf="vm$ | async as vm">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title> Home </ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <app-gif-list
+          *ngIf="gifs$ | async as gifs"
+          [gifs]="gifs"
+          (gifLoadStart)="setLoading($event)"
+          (gifLoadComplete)="setLoadingComplete($event)"
+        ></app-gif-list>
+      </ion-content>
+    </ng-container>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -41,7 +43,13 @@ export class HomeComponent {
         dataLoaded: loadedGifs.includes(gif.permalink),
       }))
     )
-  )
+  );
+
+  vm$ = combineLatest([this.gifs$.pipe(startWith([]))]).pipe(
+    map(([gifs]) => ({
+      gifs,
+    }))
+  );
 
   constructor(private redditService: RedditService) {}
 
