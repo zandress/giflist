@@ -83,10 +83,12 @@ export class HomeComponent {
 
   vm$ = combineLatest([
     this.gifs$.pipe(startWith([])),
+    this.redditService.isLoading$,
     this.settingsModalIsOpen$,
   ]).pipe(
-    map(([gifs, modalIsOpen]) => ({
+    map(([gifs, isLoading, modalIsOpen]) => ({
       gifs,
+      isLoading,
       modalIsOpen,
     }))
   );
