@@ -8,6 +8,7 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Settings } from '../shared/interfaces';
+import { SettingsFormComponentModule } from "./ui/settings-form.component";
 
 @Component({
   selector: 'app-settings',
@@ -22,7 +23,12 @@ import { Settings } from '../shared/interfaces';
       </ion-toolbar>
     </ion-header>
 
-    <ion-content class="ion-padding"> </ion-content>
+    <ion-content class="ion-padding">
+        <app-settings-form
+            [settingsForm]="settingsForm"
+            (save)="handleSave()"
+        ></app-settings-form>
+    </ion-content>
   `,
   styles: [
     `
@@ -56,8 +62,8 @@ export class SettingsComponent {
 }
 
 @NgModule({
-  imports: [CommonModule, ReactiveFormsModule, IonicModule],
-  declarations: [SettingsComponent],
-  exports: [SettingsComponent],
+    declarations: [SettingsComponent],
+    exports: [SettingsComponent],
+    imports: [CommonModule, ReactiveFormsModule, IonicModule, SettingsFormComponentModule]
 })
 export class SettingsComponentModule {}
