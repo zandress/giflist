@@ -92,6 +92,7 @@ export class RedditService {
 
                 if (!shouldKeepTrying) {
                   pagination.infiniteScroll?.complete();
+                  this.isLoading$.next(false);
                 }
 
                 return shouldKeepTrying
