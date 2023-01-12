@@ -8,7 +8,7 @@ import { RedditService } from '../shared/data-access/reddit.service';
 import { Gif } from '../shared/interfaces/gif';
 import { GifListComponentModule } from './ui/gif-list.component';
 import { SearchBarComponentModule } from './ui/search-bar.component';
-import { SettingsComponentModule } from "../settings/settings.component";
+import { SettingsComponentModule } from '../settings/settings.component';
 
 @Component({
   selector: 'app-home',
@@ -19,6 +19,14 @@ import { SettingsComponentModule } from "../settings/settings.component";
           <app-search-bar
             [subredditFormControl]="subredditFormControl"
           ></app-search-bar>
+          <ion-buttons slot="end">
+            <ion-button
+              id="settings-button"
+              (click)="settingsModalIsOpen$.next(true)"
+            >
+              <ion-icon slot="icon-only" name="settings"></ion-icon>
+            </ion-button>
+          </ion-buttons>
         </ion-toolbar>
       </ion-header>
       <ion-content>
@@ -110,19 +118,19 @@ export class HomeComponent {
 }
 
 @NgModule({
-    declarations: [HomeComponent],
-    imports: [
-        CommonModule,
-        IonicModule,
-        GifListComponentModule,
-        RouterModule.forChild([
-            {
-                path: '',
-                component: HomeComponent,
-            },
-        ]),
-        SearchBarComponentModule,
-        SettingsComponentModule
-    ]
+  declarations: [HomeComponent],
+  imports: [
+    CommonModule,
+    IonicModule,
+    GifListComponentModule,
+    RouterModule.forChild([
+      {
+        path: '',
+        component: HomeComponent,
+      },
+    ]),
+    SearchBarComponentModule,
+    SettingsComponentModule,
+  ],
 })
 export class HomeComponentModule {}
