@@ -7,7 +7,7 @@ import { BehaviorSubject, combineLatest, map, startWith } from 'rxjs';
 import { RedditService } from '../shared/data-access/reddit.service';
 import { Gif } from '../shared/interfaces/gif';
 import { GifListComponentModule } from './ui/gif-list.component';
-import { SearchBarComponentModule } from "./ui/search-bar.component";
+import { SearchBarComponentModule } from './ui/search-bar.component';
 
 @Component({
   selector: 'app-home',
@@ -45,6 +45,7 @@ import { SearchBarComponentModule } from "./ui/search-bar.component";
 export class HomeComponent {
   currentlyLoadingGifs$ = new BehaviorSubject<string[]>([]);
   loadedGifs$ = new BehaviorSubject<string[]>([]);
+  settingsModalIsOpen$ = new BehaviorSubject<boolean>(false);
 
   subredditFormControl = new FormControl('gifs');
 
@@ -95,18 +96,18 @@ export class HomeComponent {
 }
 
 @NgModule({
-    declarations: [HomeComponent],
-    imports: [
-        CommonModule,
-        IonicModule,
-        GifListComponentModule,
-        RouterModule.forChild([
-            {
-                path: '',
-                component: HomeComponent,
-            },
-        ]),
-        SearchBarComponentModule
-    ]
+  declarations: [HomeComponent],
+  imports: [
+    CommonModule,
+    IonicModule,
+    GifListComponentModule,
+    RouterModule.forChild([
+      {
+        path: '',
+        component: HomeComponent,
+      },
+    ]),
+    SearchBarComponentModule,
+  ],
 })
 export class HomeComponentModule {}
