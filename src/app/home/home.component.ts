@@ -8,6 +8,7 @@ import { RedditService } from '../shared/data-access/reddit.service';
 import { Gif } from '../shared/interfaces/gif';
 import { GifListComponentModule } from './ui/gif-list.component';
 import { SearchBarComponentModule } from './ui/search-bar.component';
+import { SettingsComponentModule } from "../settings/settings.component";
 
 @Component({
   selector: 'app-home',
@@ -37,6 +38,15 @@ import { SearchBarComponentModule } from './ui/search-bar.component';
           >
           </ion-infinite-scroll-content>
         </ion-infinite-scroll>
+        <ion-popover
+          trigger="settings-button"
+          [isOpen]="vm.modalIsOpen"
+          (ionPopoverDidDismiss)="settingsModalIsOpen$.next(false)"
+        >
+          <ng-template>
+            <app-settings></app-settings>
+          </ng-template>
+        </ion-popover>
       </ion-content>
     </ng-container>
   `,
@@ -100,18 +110,19 @@ export class HomeComponent {
 }
 
 @NgModule({
-  declarations: [HomeComponent],
-  imports: [
-    CommonModule,
-    IonicModule,
-    GifListComponentModule,
-    RouterModule.forChild([
-      {
-        path: '',
-        component: HomeComponent,
-      },
-    ]),
-    SearchBarComponentModule,
-  ],
+    declarations: [HomeComponent],
+    imports: [
+        CommonModule,
+        IonicModule,
+        GifListComponentModule,
+        RouterModule.forChild([
+            {
+                path: '',
+                component: HomeComponent,
+            },
+        ]),
+        SearchBarComponentModule,
+        SettingsComponentModule
+    ]
 })
 export class HomeComponentModule {}
