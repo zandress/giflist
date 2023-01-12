@@ -38,6 +38,8 @@ export class RedditService {
 
   private settings$ = this.settingsService.settings$;
 
+  isLoading$ = new BehaviorSubject(false);
+
   constructor(
     private http: HttpClient,
     private settingsService: SettingsService
@@ -65,6 +67,7 @@ export class RedditService {
       switchMap(([subreddit, settings]) => {
         // Fetch Gifs
         const gifsForCurrentPage$ = this.pagination$.pipe(
+          tap(() => this.isLoading$.next(true)),
           concatMap((pagination) =>
             this.fetchFromReddit(
               subreddit,
