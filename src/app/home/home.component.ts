@@ -63,9 +63,13 @@ export class HomeComponent {
     )
   );
 
-  vm$ = combineLatest([this.gifs$.pipe(startWith([]))]).pipe(
-    map(([gifs]) => ({
+  vm$ = combineLatest([
+    this.gifs$.pipe(startWith([])),
+    this.settingsModalIsOpen$,
+  ]).pipe(
+    map(([gifs, modalIsOpen]) => ({
       gifs,
+      modalIsOpen,
     }))
   );
 
