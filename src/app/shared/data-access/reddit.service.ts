@@ -4,6 +4,7 @@ import { FormControl } from '@angular/forms';
 import {
   BehaviorSubject,
   catchError,
+  combineLatest,
   concatMap,
   debounceTime,
   distinctUntilChanged,
@@ -21,6 +22,7 @@ import {
   RedditPost,
   RedditResponse,
 } from '../interfaces';
+import { SettingsService } from './settings.service';
 
 @Injectable({
   providedIn: 'root',
@@ -33,7 +35,12 @@ export class RedditService {
     infiniteScroll: null,
   });
 
-  constructor(private http: HttpClient) {}
+  private settings$ = this.settingsService.settings$;
+
+  constructor(
+    private http: HttpClient,
+    private settingsService: SettingsService
+  ) {}
 
   getGifs(subredditFormControl: FormControl) {
     // Start with a default emission of 'gifs', then only emit when
@@ -53,12 +60,12 @@ export class RedditService {
       )
     );
 
-    return subreddit$.pipe(
-      switchMap((subreddit) => {
+    return combineLatest([subreddit$, this.settings$]).pipe(
+      switchMap(([subreddit, settings]) => {
         // Fetch Gifs
         const gifsForCurrentPage$ = this.pagination$.pipe(
           concatMap((pagination) =>
-            this.fetchFromReddit(subreddit, 'hot', pagination.after)
+            this.fetchFromReddit(subreddit, settings.sort, pagination.after)
           )
         );
 
