@@ -28,6 +28,12 @@ import { SettingsComponentModule } from '../settings/settings.component';
             </ion-button>
           </ion-buttons>
         </ion-toolbar>
+        <ion-progress-bar
+          color="dark"
+          *ngIf="vm.isLoading"
+          type="indeterminate"
+          reversed="true"
+        ></ion-progress-bar>
       </ion-header>
       <ion-content>
         <app-gif-list
