@@ -28,6 +28,7 @@
     "@ionic/angular": "^6.1.9",
     "@ionic/storage": "^3.0.6",
     "@ionic/storage-angular": "^3.0.6",
+    "@ngrx/component-store": "^15.1.0",
     "cordova-sqlite-storage": "^6.1.0",
     "ionicons": "^6.0.3",
     "localforage-cordovasqlitedriver": "^1.8.0",
