@@ -4,7 +4,7 @@ import { FormControl } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { BehaviorSubject, combineLatest, map, startWith } from 'rxjs';
-import { RedditService } from '../shared/data-access/reddit.service';
+import { RedditService } from '../shared/data-access/reddit/reddit.service';
 import { Gif } from '../shared/interfaces/gif';
 import { GifListComponentModule } from './ui/gif-list.component';
 import { SearchBarComponentModule } from './ui/search-bar.component';

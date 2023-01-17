@@ -22,8 +22,8 @@ import {
   RedditPagination,
   RedditPost,
   RedditResponse,
-} from '../interfaces';
-import { SettingsService } from './settings.service';
+} from '../../interfaces';
+import { SettingsService } from '../settings.service';
 
 @Injectable({
   providedIn: 'root',
