@@ -23,7 +23,7 @@ import { SettingsService } from '../shared/data-access/settings.service';
           <ion-buttons slot="end">
             <ion-button
               id="settings-button"
-              (click)="store.settingsModalIsOpen$.next(true)"
+              (click)="store.setModalIsOpen(true)"
             >
               <ion-icon slot="icon-only" name="settings"></ion-icon>
             </ion-button>
@@ -56,7 +56,7 @@ import { SettingsService } from '../shared/data-access/settings.service';
         <ion-popover
           trigger="settings-button"
           [isOpen]="vm.modalIsOpen"
-          (ionPopoverDidDismiss)="store.settingsModalIsOpen$.next(false)"
+          (ionPopoverDidDismiss)="store.setModalIsOpen(false)"
         >
           <ng-template>
             <app-settings></app-settings>
@@ -80,12 +80,6 @@ import { SettingsService } from '../shared/data-access/settings.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
-  constructor(
-    public store: HomeStore,
-    public redditService: RedditService,
-    private settingsService: SettingsService
-  ) {}
-
   vm$ = combineLatest([
     this.store.gifs$.pipe(startWith([])),
     this.settingsService.settings$,
@@ -99,6 +93,12 @@ export class HomeComponent {
       modalIsOpen,
     }))
   );
+
+  constructor(
+    public store: HomeStore,
+    public redditService: RedditService,
+    private settingsService: SettingsService
+  ) {}
 
   loadMore(ev: Event, currentGifs: Gif[]) {
     this.redditService.nextPage(ev, currentGifs[currentGifs.length - 1].name);
